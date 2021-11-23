@@ -1,6 +1,8 @@
 ARG ENVOY_TAG
 
-FROM debian:bullseye AS jaeger
+FROM envoyproxy/envoy:$ENVOY_TAG AS base
+
+FROM base AS jaeger
 RUN apt-get update -y
 RUN apt-get install -y curl build-essential cmake
 
@@ -17,5 +19,5 @@ RUN cmake \
 RUN make -j$(nproc)
 RUN cp libjaegertracing_plugin.so /usr/local/lib/libjaegertracing_plugin.so
 
-FROM envoyproxy/envoy:$ENVOY_TAG
+FROM base
 COPY --from=jaeger /usr/local/lib/libjaegertracing_plugin.so /usr/local/lib/libjaegertracing_plugin.so
