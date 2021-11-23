@@ -1,8 +1,9 @@
 ARG ENVOY_TAG
 
-FROM debian:bullseye AS jaeger
-RUN apt-get update -y
-RUN apt-get install -y curl build-essential cmake
+FROM centos:8 AS jaeger
+RUN dnf -y install dnf-plugins-core
+RUN dnf config-manager --set-enabled powertools
+RUN dnf -y install curl make cmake gcc gcc-c++ libstdc++-static
 
 ENV VERSION=0.8.0
 RUN curl -L https://github.com/jaegertracing/jaeger-client-cpp/archive/refs/tags/v${VERSION}.tar.gz | tar zxf - -C /tmp
